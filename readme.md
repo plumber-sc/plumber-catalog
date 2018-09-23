@@ -1,4 +1,5 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/s5nq8u1fo4klxt0x?svg=true)](https://ci.appveyor.com/project/ewerkman/plumber-catalog)
+[![Build status](https://ci.appveyor.com/api/projects/status/gqdjcjwgyfkb8819?svg=true)](https://ci.appveyor.com/project/ewerkman/plumber-catalog-af9f9)
+
 
 # Plumber Catalog for Sitecore Commerce
 
