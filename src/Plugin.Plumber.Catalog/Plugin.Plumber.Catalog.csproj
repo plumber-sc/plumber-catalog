@@ -6,8 +6,8 @@
     <TargetFramework>net462</TargetFramework>
     <PackageTags>$(PackageTags);Commerce;Plugin</PackageTags>
     <PackageIconUrl>http://plumber-sc.com/images/plumber-logo.svg</PackageIconUrl>
-    <PackageProjectUrl>http://plumber-sc.com</PackageProjectUrl>
-    <PackageLicenseUrl>http://plumber-sc.com</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/plumber-sc/plumber-catalog</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/plumber-sc/plumber-catalog/blob/develop/LICENSE</PackageLicenseUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
   </PropertyGroup>
 
