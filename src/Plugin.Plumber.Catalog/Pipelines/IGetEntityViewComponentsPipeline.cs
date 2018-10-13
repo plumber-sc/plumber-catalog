@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Plugin.Plumber.Catalog.Pipelines
 {
-    [PipelineDisplayName(Constants.Pipelines.GetSellableItemComponentsPipeline)]
-    public interface IGetSellableItemComponentsPipeline : 
-        IPipeline<SellableItemComponentsArgument, 
-        SellableItemComponentsArgument, 
+    [PipelineDisplayName(Constants.Pipelines.GetEntityViewComponentsPipeline)]
+    public interface IGetEntityViewComponentsPipeline : 
+        IPipeline<EntityViewComponentsArgument, 
+        EntityViewComponentsArgument, 
         CommercePipelineExecutionContext>
     {
     }

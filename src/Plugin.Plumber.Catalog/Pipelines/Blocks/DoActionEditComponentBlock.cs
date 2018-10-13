@@ -34,8 +34,8 @@ namespace Plugin.Plumber.Catalog.Pipelines.Blocks
             }
 
             // Get the sellable item from the context
-            var sellableItem = context.CommerceContext.GetObject<SellableItem>(x => x.Id.Equals(entityView.EntityId));
-            if (sellableItem == null)
+            var commerceEntity = context.CommerceContext.GetObject<CommerceEntity>(x => x.Id.Equals(entityView.EntityId));
+            if (commerceEntity == null)
             {
                 return entityView;
             }
@@ -46,18 +46,18 @@ namespace Plugin.Plumber.Catalog.Pipelines.Blocks
                 return entityView;
             }
 
-            var applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, sellableItem);
+            var applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, commerceEntity);
             var editedComponentType = applicableComponentTypes.SingleOrDefault(comp => entityView.Action == $"Edit-{comp.FullName}");
 
             if (editedComponentType != null)
             {
                 // Get the component from the sellable item or its variation
-                var editedComponent = catalogSchemaCommander.GetEditedComponent(sellableItem, editedComponentType);
+                var editedComponent = catalogSchemaCommander.GetEditedComponent(commerceEntity, editedComponentType);
 
                 catalogSchemaCommander.SetPropertyValuesOnEditedComponent(entityView.Properties, editedComponentType, editedComponent, context.CommerceContext);
 
                 // Persist changes
-                await this.catalogSchemaCommander.Pipeline<IPersistEntityPipeline>().Run(new PersistEntityArgument(sellableItem), context);
+                await this.catalogSchemaCommander.Pipeline<IPersistEntityPipeline>().Run(new PersistEntityArgument(commerceEntity), context);
             }
 
             return entityView;

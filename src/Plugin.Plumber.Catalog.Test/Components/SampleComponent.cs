@@ -14,7 +14,7 @@ namespace Plugin.Plumber.Catalog.Sample.Components
     /// The SampleComponent.
     /// </summary>
     [EntityView("Sample")]
-    [ItemDefinition("Refrigerator")]
+    [AddToItemDefinition("Refrigerator")]
     public class SampleComponent : Component
     {
         /// <summary>

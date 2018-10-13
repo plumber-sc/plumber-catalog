@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Plugin.Plumber.Catalog.Attributes;
+﻿using Plugin.Plumber.Catalog.Attributes;
 using Plugin.Plumber.Catalog.Commanders;
-using Plugin.Plumber.Catalog.Extensions;
 using Sitecore.Commerce.Core;
 using Sitecore.Commerce.EntityViews;
-using Sitecore.Commerce.Plugin.Catalog;
 using Sitecore.Framework.Conditions;
 using Sitecore.Framework.Pipelines;
 using System;
@@ -39,19 +36,19 @@ namespace Plugin.Plumber.Catalog.Pipelines.Blocks
             }
 
             // Check if we have a sellable item on the context
-            var sellableItem = context.CommerceContext.GetObject<SellableItem>(x => x.Id.Equals(entityView.EntityId));
-            if (sellableItem == null)
+            var commerceEntity = context.CommerceContext.GetObject<CommerceEntity>(x => x.Id.Equals(entityView.EntityId));
+            if (commerceEntity == null)
             {
                 return entityView;
             }
-
-            var applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, sellableItem);
+            
+            var applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, commerceEntity);
             var editedComponentType = applicableComponentTypes.SingleOrDefault(comp => entityView.Action == $"Edit-{comp.FullName}");
 
             if (editedComponentType != null)
             {
                 // Get the component from the sellable item or its variation
-                var editedComponent = catalogSchemaCommander.GetEditedComponent(sellableItem, editedComponentType);
+                var editedComponent = catalogSchemaCommander.GetEditedComponent(commerceEntity, editedComponentType);
               
                 await ValidateConstraints(entityView.Properties,
                     editedComponentType, editedComponent, context);

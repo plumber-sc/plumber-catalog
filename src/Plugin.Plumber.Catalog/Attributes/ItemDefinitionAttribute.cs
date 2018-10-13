@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace Plugin.Plumber.Catalog.Attributes
 {
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)]
-    public class ItemDefinitionAttribute : System.Attribute
+    public class AddToItemDefinitionAttribute : System.Attribute
     {
         public string ItemDefinition { get; private set; }
 
-        public ItemDefinitionAttribute(string itemDefinition) => ItemDefinition = itemDefinition;
+        public AddToItemDefinitionAttribute(string itemDefinition) => ItemDefinition = itemDefinition;
     }
 }

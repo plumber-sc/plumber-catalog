@@ -7,7 +7,7 @@ using Plugin.Plumber.Catalog.Pipelines;
 using Plugin.Plumber.Catalog.Pipelines.Blocks;
 using Sitecore.Framework.Configuration;
 using Sitecore.Framework.Pipelines.Definitions.Extensions;
-
+using Plugin.Plumber.Catalog.Pipelines.Blocks.ViewValidators;
 
 namespace Plugin.Plumber.Catalog
 {
@@ -46,7 +46,14 @@ namespace Plugin.Plumber.Catalog
                             c.Add<DoActionEditComponentBlock>().After<ValidateEntityVersionBlock>()
                             .Add<DoActionAddValidationConstraintBlock>().Before<DoActionEditComponentBlock>();
                         })
-                        .AddPipeline<IGetSellableItemComponentsPipeline, GetSellableItemComponentsPipeline>()
+                        .AddPipeline<IGetEntityViewComponentsPipeline, GetEntityViewComponentsPipeline>()
+                        .AddPipeline<IGetApplicableViewConditionsPipeline, GetApplicableViewConditionsPipeline>( c=> 
+                        {
+                            c.Add<ValidateSellableItemViewBlock>()
+                            .Add<ValidatePromotionViewBlock>()
+                            .Add<ValidateOrderViewBlock>()
+                            .Add< ValidateCustomerViewBlock>();
+                        })
                         .ConfigurePipeline<IConfigureServiceApiPipeline>(c => c.Add<ConfigureServiceApiBlock>()));
 
         }

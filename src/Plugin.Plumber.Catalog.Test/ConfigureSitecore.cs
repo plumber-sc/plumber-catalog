@@ -31,9 +31,9 @@ namespace Plugin.Plumber.Catalog.Sample
             services.RegisterAllPipelineBlocks(assembly);
 
             services.Sitecore().Pipelines(config => config
-                .ConfigurePipeline<IGetSellableItemComponentsPipeline>(configure =>
+                .ConfigurePipeline<IGetEntityViewComponentsPipeline>(configure =>
                 {
-                    configure.Add<GetSellableItemComponentsBlock>();
+                    configure.Add<GetEntityViewComponentsBlock>();
                 })
                .ConfigurePipeline<IConfigureServiceApiPipeline>(configure => configure.Add<ConfigureServiceApiBlock>()));
 

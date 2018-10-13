@@ -33,40 +33,48 @@ namespace Plugin.Plumber.Catalog.Commanders
         /// <returns></returns>
         public async Task<List<Type>> GetAllComponentTypes(CommerceContext context)
         {
-            var sellableItemComponentsArgument = new SellableItemComponentsArgument();
-            sellableItemComponentsArgument = await this.Pipeline<IGetSellableItemComponentsPipeline>().Run(sellableItemComponentsArgument, context.GetPipelineContext());
+            var sellableItemComponentsArgument = new EntityViewComponentsArgument();
+            sellableItemComponentsArgument = await this.Pipeline<IGetEntityViewComponentsPipeline>().Run(sellableItemComponentsArgument, context.GetPipelineContext());
 
-            return sellableItemComponentsArgument.SellableItemComponents;
+            return sellableItemComponentsArgument.Components;
         }
 
         /// <summary>
         ///     Retrieves all component types applicable for the sellable item
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="sellableItem">Sellable item for which to get the applicable components</param>
+        /// <param name="commerceEntity">Sellable item for which to get the applicable components</param>
         /// <returns></returns>
-        public async Task<List<Type>> GetApplicableComponentTypes(CommerceContext context, SellableItem sellableItem)
+        public async Task<List<Type>> GetApplicableComponentTypes(CommerceContext context, CommerceEntity commerceEntity)
         {
             // Get the item definition
-            var catalogs = sellableItem.GetComponent<CatalogsComponent>();
+            var catalogs = commerceEntity.GetComponent<CatalogsComponent>();
 
             // TODO: What happens if a sellableitem is part of multiple catalogs?
             var catalog = catalogs.GetComponent<CatalogComponent>();
             var itemDefinition = catalog.ItemDefinition;
 
-            var sellableItemComponentsArgument = new SellableItemComponentsArgument();
-            sellableItemComponentsArgument = await this.Pipeline<IGetSellableItemComponentsPipeline>().Run(sellableItemComponentsArgument, context.GetPipelineContext());
+            var sellableItemComponentsArgument = new EntityViewComponentsArgument();
+            sellableItemComponentsArgument = await this.Pipeline<IGetEntityViewComponentsPipeline>().Run(sellableItemComponentsArgument, context.GetPipelineContext());
 
             var applicableComponentTypes = new List<Type>();
-            foreach (var component in sellableItemComponentsArgument.SellableItemComponents)
+            foreach (var component in sellableItemComponentsArgument.Components)
             {
                 System.Attribute[] attrs = System.Attribute.GetCustomAttributes(component);
 
-                if (attrs.Any(attr => attr is AllSellableItemsAttribute))
+                if (attrs.Any(attr => attr is AllSellableItemsAttribute) && commerceEntity is SellableItem)
                 {
                     applicableComponentTypes.Add(component);
                 }
-                else if (attrs.Any(attr => attr is ItemDefinitionAttribute && ((ItemDefinitionAttribute)attr).ItemDefinition == itemDefinition))
+                else if (attrs.Any(attr => attr is AddToItemDefinitionAttribute && ((AddToItemDefinitionAttribute)attr).ItemDefinition == itemDefinition))
+                {
+                    applicableComponentTypes.Add(component);
+                }
+                else if( attrs.Any(attr => attr is AddToEntityTypeAttribute && ((AddToEntityTypeAttribute)attr).EntityType == commerceEntity.GetType()))
+                {
+                    applicableComponentTypes.Add(component);
+                }
+                else if( attrs.Any(attr => attr is AddToAllEntityTypesAttribute))
                 {
                     applicableComponentTypes.Add(component);
                 }
@@ -79,16 +87,16 @@ namespace Plugin.Plumber.Catalog.Commanders
         /// <summary>
         ///     
         /// </summary>
-        /// <param name="sellableItem"></param>
+        /// <param name="commerceEntity"></param>
         /// <param name="editedComponentType"></param>
         /// <returns></returns>
-        public Sitecore.Commerce.Core.Component GetEditedComponent(SellableItem sellableItem, Type editedComponentType)
+        public Sitecore.Commerce.Core.Component GetEditedComponent(CommerceEntity commerceEntity, Type editedComponentType)
         {
-            Sitecore.Commerce.Core.Component component = sellableItem.Components.SingleOrDefault(comp => comp.GetType() == editedComponentType);
+            Sitecore.Commerce.Core.Component component = commerceEntity.Components.SingleOrDefault(comp => comp.GetType() == editedComponentType);
             if (component == null)
             {
                 component = (Sitecore.Commerce.Core.Component)Activator.CreateInstance(editedComponentType);
-                sellableItem.Components.Add(component);
+                commerceEntity.Components.Add(component);
             }
 
             return component;

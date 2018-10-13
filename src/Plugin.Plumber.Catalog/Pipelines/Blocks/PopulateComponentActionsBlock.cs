@@ -1,14 +1,11 @@
 ﻿using Sitecore.Commerce.Core;
 using Sitecore.Commerce.EntityViews;
 using Sitecore.Commerce.Plugin.Catalog;
-using Plugin.Plumber.Catalog.Attributes;
-using Plugin.Plumber.Catalog.Pipelines.Arguments;
 using Sitecore.Framework.Conditions;
 using Sitecore.Framework.Pipelines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Plugin.Plumber.Catalog.Commanders;
 using Plugin.Plumber.Catalog.Extensions;
@@ -36,16 +33,11 @@ namespace Plugin.Plumber.Catalog.Pipelines.Blocks
 
             var request = this.viewCommander.CurrentEntityViewArgument(context.CommerceContext);
 
-            if(!(request?.Entity is SellableItem))
-            {
-                return arg;
-            }
+            var commerceEntity = request?.Entity;
 
-            var sellableItem = (SellableItem)request.Entity;
-
-            if (sellableItem != null)
+            if (commerceEntity != null)
             {
-                List<Type> applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, sellableItem);
+                List<Type> applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, commerceEntity);
 
                 var editableComponentType = applicableComponentTypes.SingleOrDefault(type => type.FullName == arg.Name);
 
