@@ -1,7 +1,5 @@
-﻿using Plugin.Plumber.Catalog.Pipelines.Arguments;
-using Sitecore.Commerce.Core;
+﻿using Sitecore.Commerce.Core;
 using Sitecore.Commerce.Plugin.Promotions;
-using Sitecore.Framework.Pipelines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Plugin.Plumber.Catalog.Pipelines.Blocks.ViewValidators
 {
-    public class ValidatePromotionViewBlock : ValidateEntityViewBaseBlock<Promotion>
+    public class ValidatePromotionBookViewBlock : ValidateEntityViewBaseBlock<PromotionBook>
     {
         protected override string GetMasterViewName(CommercePipelineExecutionContext context)
         {
-            var promotionsViewsPolicy = context.GetPolicy<KnownPromotionsViewsPolicy>();
-            return promotionsViewsPolicy.Master;
+            var viewsPolicy = context.GetPolicy<KnownPromotionsViewsPolicy>();
+            return viewsPolicy?.Master;
         }
     }
 }

@@ -11,17 +11,12 @@ using System.Threading.Tasks;
 
 namespace Plugin.Plumber.Catalog.Pipelines.Blocks.ViewValidators
 {
-    public class ValidateOrderViewBlock : PipelineBlock<EntityViewConditionsArgument, EntityViewConditionsArgument, CommercePipelineExecutionContext>
+    public class ValidateOrderViewBlock : ValidateEntityViewBaseBlock<Order>
     {
-        public override async Task<EntityViewConditionsArgument> Run(EntityViewConditionsArgument arg, CommercePipelineExecutionContext context)
+        protected override string GetMasterViewName(CommercePipelineExecutionContext context)
         {
             var orderViewsPolicy = context.GetPolicy<KnownOrderViewsPolicy>();
-
-            arg.ValidateEntity(ent => ent is Order);
-            arg.ValidateDisplayView(viewName => viewName.Equals(orderViewsPolicy.Master, StringComparison.OrdinalIgnoreCase));
-            arg.ValidateEditView(action => action.StartsWith("Edit-", StringComparison.OrdinalIgnoreCase));
-
-            return await Task.FromResult(arg);
+            return orderViewsPolicy?.Master;
         }
     }
 }

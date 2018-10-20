@@ -19,6 +19,7 @@
     <PackageReference Include="Sitecore.Commerce.Plugin.Customers" Version="2.2.10" />
     <PackageReference Include="Sitecore.Commerce.Plugin.Inventory" Version="2.2.26" />
     <PackageReference Include="Sitecore.Commerce.Plugin.Orders" Version="2.2.22" />
+    <PackageReference Include="Sitecore.Commerce.Plugin.Pricing" Version="2.2.12" />
     <PackageReference Include="Sitecore.Commerce.Plugin.Promotions" Version="2.2.3" />
   </ItemGroup>
 
