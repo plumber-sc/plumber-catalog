@@ -57,7 +57,8 @@ namespace Plugin.Plumber.Catalog
                             .Add<ValidateCatalogViewBlock>()
                             .Add<ValidatePromotionBookViewBlock>()
                             .Add<ValidatePriceBookViewBlock>()
-                            .Add<ValidatePriceCardViewBlock>();
+                            .Add<ValidatePriceCardViewBlock>()
+                            .Add<ValidateCategoryViewBlock>();
                         })
                         .ConfigurePipeline<IConfigureServiceApiPipeline>(c => c.Add<ConfigureServiceApiBlock>()));
 

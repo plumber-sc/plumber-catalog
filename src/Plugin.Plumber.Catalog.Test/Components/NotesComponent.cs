@@ -16,8 +16,8 @@ namespace Plugin.Plumber.Catalog.Sample.Components
     [EntityView("Notes")]
     public class NotesComponent : Component
     {
-        [Property("Warranty Information", isRequired: true, showInList: true)]
-        public string WarrantyInformation { get; set; } = string.Empty;
+        [Property("External Notes", isRequired: true, showInList: true)]
+        public string ExternalNotes { get; set; } = string.Empty;
 
         [Property("Internal Notes")]
         [Required]
