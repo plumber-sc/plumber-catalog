@@ -103,7 +103,7 @@ namespace Plugin.Plumber.Catalog.Sample.Pipelines.Blocks
     {
         public async override Task<SellableItemComponentsArgument> Run(SellableItemComponentsArgument arg, CommercePipelineExecutionContext context)
         {
-            arg.Register<WarrantyComponent>();
+            arg.RegisterComponent<WarrantyComponent>();
 
             return await Task.FromResult<SellableItemComponentsArgument>(arg);
         }
