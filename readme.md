@@ -1,9 +1,9 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/gqdjcjwgyfkb8819?svg=true)](https://ci.appveyor.com/project/ewerkman/plumber-catalog-af9f9)
 
 
-# Plumber Catalog for Sitecore Commerce
+# Plumber Component Decorator for Sitecore Commerce
 
-> Plugin for Sitecore Commerce that allows you to add attributes to your catalog components for easy addition to the Sitecore Commerce Business tools.
+> Plugin for Sitecore Commerce that allows you to add attributes to your components for easy addition, viewing and editing in the Sitecore Commerce Business tools.
 
 ## What is this?
 

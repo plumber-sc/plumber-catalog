@@ -229,6 +229,8 @@ namespace Sitecore.Commerce.Engine
             if (this._hostEnv.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                // app.UseMiddleware<LogRequestMiddleware>();
+                // app.UseMiddleware<LogResponseMiddleware>();
             }
             else
             {
@@ -244,7 +246,7 @@ namespace Sitecore.Commerce.Engine
                     .AllowAnyMethod());
 
             app.UseAuthentication();
-
+            
             Task.Run(() => startNodePipeline.Run(this._nodeContext, this._nodeContext.GetPipelineContextOptions())).Wait();
 
             var environmentName = this.Configuration.GetSection("AppSettings:EnvironmentName").Value;

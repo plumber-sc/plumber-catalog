@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plugin.Plumber.Catalog.Test\Plugin.Plumber.Catalog.Sample.csproj" />
-    <ProjectReference Include="..\Plugin.Plumber.Catalog\Plugin.Plumber.Catalog.csproj" />
+    <ProjectReference Include="..\Plugin.Plumber.Component.Sample\Plugin.Plumber.Component.Sample.csproj" />
+    <ProjectReference Include="..\Plugin.Plumber.Component\Plugin.Plumber.Component.csproj" />
     <ProjectReference Include="..\Plugin.Sample.AdventureWorks\Plugin.Sample.AdventureWorks.csproj" />
     <ProjectReference Include="..\Plugin.Sample.Habitat\Plugin.Sample.Habitat.csproj" />
     <ProjectReference Include="..\Plugin.Sample.Upgrade\Plugin.Sample.Upgrade.csproj" />
