@@ -3,6 +3,7 @@ using Plugin.Plumber.Component.Commanders;
 using Sitecore.Commerce.Core;
 using Sitecore.Commerce.EntityViews;
 using Sitecore.Commerce.Plugin.Catalog;
+using System.Linq;
 
 namespace Plugin.Plumber.Component.Pipelines.Blocks
 {
@@ -12,9 +13,17 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
         {
         }
 
-        protected override bool ComponentShouldBeAddedToDataTemplate(EntityViewAttribute entityViewAttribute)
+        protected override bool ComponentShouldBeAddedToDataTemplate(System.Attribute[] attrs)
         {
-            return entityViewAttribute.AddToCategoryDataTemplate;
+            return attrs.SingleOrDefault(attr => attr is AddToAllEntityTypesAttribute) is AddToAllEntityTypesAttribute
+                || attrs.SingleOrDefault(attr => attr is AddToEntityTypeAttribute && ((AddToEntityTypeAttribute)attr).EntityType == typeof(Category)) != null;
+
+        }
+
+        protected override string GetConnectViewName(CommercePipelineExecutionContext context)
+        {
+            var catalogViewsPolicy = context.GetPolicy<KnownCatalogViewsPolicy>();
+            return catalogViewsPolicy.ConnectCategory;
         }
 
         protected override bool IsSupportedEntity(CommerceEntity entity)

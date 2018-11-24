@@ -28,8 +28,8 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
         }
 
         protected abstract bool IsSupportedEntity(CommerceEntity entity);
-
-        protected abstract bool ComponentShouldBeAddedToDataTemplate(EntityViewAttribute entityViewAttribute);
+        protected abstract bool ComponentShouldBeAddedToDataTemplate(System.Attribute[] attrs);
+        protected abstract string GetConnectViewName(CommercePipelineExecutionContext context);
 
         public async override Task<EntityView> Run(EntityView arg, CommercePipelineExecutionContext context)
         {
@@ -42,8 +42,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                 return arg;
             }
 
-            var catalogViewsPolicy = context.GetPolicy<KnownCatalogViewsPolicy>();
-            var isConnectView = arg.Name.Equals(catalogViewsPolicy.ConnectSellableItem, StringComparison.OrdinalIgnoreCase);            
+            var isConnectView = arg.Name.Equals(GetConnectViewName(context), StringComparison.OrdinalIgnoreCase);            
 
             // Make sure that we target the correct views
             if (!isConnectView)
@@ -60,7 +59,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                 System.Attribute[] attrs = System.Attribute.GetCustomAttributes(componentType);
 
                 if (attrs.SingleOrDefault(attr => attr is EntityViewAttribute) is EntityViewAttribute entityViewAttribute && 
-                    ComponentShouldBeAddedToDataTemplate(entityViewAttribute)) 
+                    ComponentShouldBeAddedToDataTemplate(attrs)) 
                 {
                     // Create a new view and add it to the current entity view.
                     var view = new EntityView

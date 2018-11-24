@@ -13,19 +13,10 @@ namespace Plugin.Plumber.Component.Attributes
     public class EntityViewAttribute : System.Attribute
     {
         public string ViewName { get; private set; }
-        public bool AddToCatalogDataTemplate { get; private set; }
-        public bool AddToCategoryDataTemplate { get; private set; }
-        public bool AddToSellableItemDataTemplate { get; private set; }
      
-        public EntityViewAttribute(string viewName, 
-            bool addToCatalogDataTemplate = false,
-            bool addToCategoryDataTemplate = false,
-            bool addToSellableItemDataTemplate = false)
+        public EntityViewAttribute(string viewName)
         {
             ViewName = viewName;
-            AddToCatalogDataTemplate = addToCatalogDataTemplate;
-            AddToCategoryDataTemplate = addToCategoryDataTemplate;
-            AddToSellableItemDataTemplate = addToSellableItemDataTemplate;
         }
     }
 }

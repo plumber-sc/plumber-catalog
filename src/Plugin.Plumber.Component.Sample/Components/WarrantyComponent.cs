@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Plugin.Plumber.Component.Sample.Components
 {
-    [EntityView(viewName:"Warranty Information",addToCatalogDataTemplate:true)]
+    [EntityView(viewName:"Warranty Information")]
     [AllSellableItems]
     public class WarrantyComponent : Sitecore.Commerce.Core.Component
     {
