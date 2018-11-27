@@ -19,9 +19,9 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
     public class PopulateComponentActionsBlock : PipelineBlock<EntityView, EntityView, CommercePipelineExecutionContext>
     {
         private readonly ViewCommander viewCommander;
-        private readonly CatalogSchemaCommander catalogSchemaCommander;        
+        private readonly ComponentViewCommander catalogSchemaCommander;        
 
-        public PopulateComponentActionsBlock(ViewCommander viewCommander, CatalogSchemaCommander catalogSchemaCommander)
+        public PopulateComponentActionsBlock(ViewCommander viewCommander, ComponentViewCommander catalogSchemaCommander)
         {
             this.viewCommander = viewCommander;
             this.catalogSchemaCommander = catalogSchemaCommander;
@@ -37,7 +37,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
 
             if (commerceEntity != null)
             {
-                List<Type> applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, commerceEntity);
+                List<Type> applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(commerceEntity, request.ItemId, context.CommerceContext);
 
                 var editableComponentType = applicableComponentTypes.SingleOrDefault(type => type.FullName == arg.Name);
 

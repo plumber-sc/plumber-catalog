@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Plugin.Plumber.Component.Attributes;
+using Plugin.Plumber.Component.Attributes.SellableItem;
 using Plugin.Plumber.Component.Pipelines;
 using Plugin.Plumber.Component.Pipelines.Arguments;
 using Sitecore.Commerce.Core;
@@ -16,13 +17,13 @@ namespace Plugin.Plumber.Component.Commanders
     /// <summary>
     ///     Helper class 
     /// </summary>
-    public class CatalogSchemaCommander : CommerceCommander
+    public class ComponentViewCommander : CommerceCommander
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
-        public CatalogSchemaCommander(IServiceProvider serviceProvider) : base(serviceProvider)
+        public ComponentViewCommander(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
 
@@ -42,10 +43,11 @@ namespace Plugin.Plumber.Component.Commanders
         /// <summary>
         ///     Retrieves all component types applicable for the sellable item
         /// </summary>
-        /// <param name="context"></param>
         /// <param name="commerceEntity">Sellable item for which to get the applicable components</param>
+        /// <param name="itemId"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<List<Type>> GetApplicableComponentTypes(CommerceContext context, CommerceEntity commerceEntity)
+        public async Task<List<Type>> GetApplicableComponentTypes(CommerceEntity commerceEntity, string itemId, CommerceContext context)
         {
             // Get the item definition
             var catalogs = commerceEntity.GetComponent<CatalogsComponent>();
@@ -53,6 +55,7 @@ namespace Plugin.Plumber.Component.Commanders
             // TODO: What happens if a sellableitem is part of multiple catalogs?
             var catalog = catalogs.GetComponent<CatalogComponent>();
             var itemDefinition = catalog.ItemDefinition;
+ 
 
             var sellableItemComponentsArgument = new EntityViewComponentsArgument();
             sellableItemComponentsArgument = await this.Pipeline<IGetEntityViewComponentsPipeline>().Run(sellableItemComponentsArgument, context.GetPipelineContext());
@@ -64,11 +67,23 @@ namespace Plugin.Plumber.Component.Commanders
 
                 if (attrs.Any(attr => attr is AllSellableItemsAttribute) && commerceEntity is SellableItem)
                 {
-                    applicableComponentTypes.Add(component);
+                    var sellableItemsAttribute = attrs.Single(attr => attr is SellableItemAttributeBase) as SellableItemAttributeBase;
+                    var addToSellableItem = sellableItemsAttribute.AddToSellableItem;
+
+                    if (IsApplicableComponent(itemId, addToSellableItem))
+                    {
+                        applicableComponentTypes.Add(component);
+                    }
                 }
                 else if (attrs.Any(attr => attr is AddToItemDefinitionAttribute && ((AddToItemDefinitionAttribute)attr).ItemDefinition == itemDefinition))
                 {
-                    applicableComponentTypes.Add(component);
+                    var sellableItemsAttribute = attrs.Single(attr => attr is AddToItemDefinitionAttribute) as AddToItemDefinitionAttribute;
+                    var addToSellableItem = sellableItemsAttribute.AddToSellableItem;
+
+                    if (IsApplicableComponent(itemId, addToSellableItem))
+                    {
+                        applicableComponentTypes.Add(component);
+                    }
                 }
                 else if( attrs.Any(attr => attr is AddToEntityTypeAttribute && ((AddToEntityTypeAttribute)attr).EntityType == commerceEntity.GetType()))
                 {
@@ -84,8 +99,16 @@ namespace Plugin.Plumber.Component.Commanders
             return applicableComponentTypes;
         }
 
+        private bool IsApplicableComponent(string itemId, AddToSellableItem addToSellableItem)
+        {
+            return (addToSellableItem == AddToSellableItem.SellableItemAndVariant) ||
+                (addToSellableItem == AddToSellableItem.SellableItemOnly && string.IsNullOrEmpty(itemId)) ||
+                (addToSellableItem == AddToSellableItem.VariantOnly && !string.IsNullOrEmpty(itemId));
+        }
+
         /// <summary>
-        ///     
+        ///    Gets a component of specified type from the Components property of the commerceEntity or creates a new 
+        ///    component and adds it to the Components property of commerceEntity if the component does not exist.
         /// </summary>
         /// <param name="commerceEntity"></param>
         /// <param name="editedComponentType"></param>
@@ -102,6 +125,13 @@ namespace Plugin.Plumber.Component.Commanders
             return component;
         }
 
+        /// <summary>
+        ///     Sets the values from an edit view on the edited component. 
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <param name="editedComponentType"></param>
+        /// <param name="editedComponent"></param>
+        /// <param name="context"></param>
         public void SetPropertyValuesOnEditedComponent(List<ViewProperty> properties,
             Type editedComponentType,
             Sitecore.Commerce.Core.Component editedComponent,

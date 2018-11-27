@@ -8,13 +8,14 @@ namespace Plugin.Plumber.Component.Sample.Components
 {
     using Sitecore.Commerce.Core;
     using Plugin.Plumber.Component.Attributes;
+    using Plugin.Plumber.Component.Attributes.SellableItem;
 
     /// <inheritdoc />
     /// <summary>
     /// The SampleComponent.
     /// </summary>
     [EntityView("Sample")]
-    [AddToItemDefinition("Refrigerator")]
+    [AddToItemDefinition("Refrigerator", AddToSellableItem.VariantOnly)]
     public class SampleComponent : Component
     {
         /// <summary>

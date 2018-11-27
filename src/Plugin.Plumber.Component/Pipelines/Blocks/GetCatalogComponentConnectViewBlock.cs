@@ -9,7 +9,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
 {
     public class GetCatalogComponentConnectViewBlock : GetComponentConnectViewBaseBlock
     {
-        public GetCatalogComponentConnectViewBlock(ViewCommander viewCommander, CatalogSchemaCommander catalogSchemaCommander) : base(viewCommander, catalogSchemaCommander)
+        public GetCatalogComponentConnectViewBlock(ViewCommander viewCommander, ComponentViewCommander catalogSchemaCommander) : base(viewCommander, catalogSchemaCommander)
         {
         }
 

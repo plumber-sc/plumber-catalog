@@ -1,4 +1,5 @@
 ﻿using Plugin.Plumber.Component.Attributes;
+using Plugin.Plumber.Component.Attributes.SellableItem;
 using Plugin.Plumber.Component.Commanders;
 using Sitecore.Commerce.Core;
 using Sitecore.Commerce.EntityViews;
@@ -9,7 +10,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
 {
     public class GetSellableItemComponentConnectViewBlock : GetComponentConnectViewBaseBlock
     {
-        public GetSellableItemComponentConnectViewBlock(ViewCommander viewCommander, CatalogSchemaCommander catalogSchemaCommander) : base(viewCommander, catalogSchemaCommander)
+        public GetSellableItemComponentConnectViewBlock(ViewCommander viewCommander, ComponentViewCommander catalogSchemaCommander) : base(viewCommander, catalogSchemaCommander)
         {
         }
 

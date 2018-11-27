@@ -18,10 +18,10 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
     [PipelineDisplayName(Constants.Pipelines.Blocks.GetComponentConnectViewBaseBlock)]
     public abstract class GetComponentConnectViewBaseBlock : PipelineBlock<EntityView, EntityView, CommercePipelineExecutionContext>
     {
-        private readonly CatalogSchemaCommander catalogSchemaCommander;
+        private readonly ComponentViewCommander catalogSchemaCommander;
         private readonly ViewCommander viewCommander;
 
-        public GetComponentConnectViewBaseBlock(ViewCommander viewCommander, CatalogSchemaCommander catalogSchemaCommander)
+        public GetComponentConnectViewBaseBlock(ViewCommander viewCommander, ComponentViewCommander catalogSchemaCommander)
         {
             this.viewCommander = viewCommander;
             this.catalogSchemaCommander = catalogSchemaCommander;

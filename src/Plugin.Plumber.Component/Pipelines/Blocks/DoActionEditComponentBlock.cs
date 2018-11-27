@@ -16,9 +16,9 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
     [PipelineDisplayName(Constants.Pipelines.Blocks.DoActionEditComponentBlock)]
     public class DoActionEditComponentBlock : PipelineBlock<EntityView, EntityView, CommercePipelineExecutionContext>
     {
-        private readonly CatalogSchemaCommander catalogSchemaCommander;
+        private readonly ComponentViewCommander catalogSchemaCommander;
 
-        public DoActionEditComponentBlock(CatalogSchemaCommander catalogSchemaCommander)
+        public DoActionEditComponentBlock(ComponentViewCommander catalogSchemaCommander)
         {
             this.catalogSchemaCommander = catalogSchemaCommander;
         }
@@ -46,7 +46,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                 return entityView;
             }
 
-            var applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, commerceEntity);
+            var applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(commerceEntity, null, context.CommerceContext);
             var editedComponentType = applicableComponentTypes.SingleOrDefault(comp => entityView.Action == $"Edit-{comp.FullName}");
 
             if (editedComponentType != null)

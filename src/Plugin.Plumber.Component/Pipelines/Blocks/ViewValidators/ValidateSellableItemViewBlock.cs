@@ -10,21 +10,21 @@ using System.Threading.Tasks;
 
 namespace Plugin.Plumber.Component.Pipelines.Blocks.ViewValidators
 {
-    public class ValidateSellableItemViewBlock : ValidateEntityViewBaseBlock<SellableItem>
-    {/*
+    public class ValidateSellableItemViewBlock : PipelineBlock<EntityViewConditionsArgument, EntityViewConditionsArgument, CommercePipelineExecutionContext>
+    {
         public override async Task<EntityViewConditionsArgument> Run(EntityViewConditionsArgument arg, CommercePipelineExecutionContext context)
         {
+            var catalogViewsPolicy = context.GetPolicy<KnownCatalogViewsPolicy>();
+
             arg.ValidateEntity(ent => ent is SellableItem);
-            arg.ValidateDisplayView(viewName => viewName.Equals(catalogViewsPolicy.Master, StringComparison.OrdinalIgnoreCase));
-            arg.ValidateEditView(viewName => viewName.Equals(catalogViewsPolicy.Variant, StringComparison.OrdinalIgnoreCase));
+            arg.ValidateDisplayView(viewName =>
+            {
+                return viewName.Equals(catalogViewsPolicy.Master, StringComparison.OrdinalIgnoreCase) ||
+                    viewName.Equals(catalogViewsPolicy.Variant, StringComparison.OrdinalIgnoreCase);
+            });
+            arg.ValidateEditView(action => action.StartsWith("Edit-", StringComparison.OrdinalIgnoreCase));
 
             return await Task.FromResult(arg);
-        }
-        */
-        protected override string GetMasterViewName(CommercePipelineExecutionContext context)
-        {
-            var catalogViewsPolicy = context.GetPolicy<KnownCatalogViewsPolicy>();
-            return catalogViewsPolicy?.Master;
         }
     }
 }
