@@ -1,11 +1,11 @@
-﻿using Sitecore.Commerce.Core;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Sitecore.Commerce.Core;
 using Sitecore.Commerce.EntityViews;
 using Sitecore.Commerce.Plugin.Catalog;
 using Sitecore.Framework.Conditions;
 using Sitecore.Framework.Pipelines;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Plugin.Plumber.Component.Commanders;
 
 namespace Plugin.Plumber.Component.Pipelines.Blocks
@@ -33,7 +33,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                 return entityView;
             }
 
-            // Get the sellable item from the context
+            // Get the commerce entity from the context
             var commerceEntity = context.CommerceContext.GetObject<CommerceEntity>(x => x.Id.Equals(entityView.EntityId));
             if (commerceEntity == null)
             {
@@ -46,15 +46,29 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                 return entityView;
             }
 
-            var applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(commerceEntity, null, context.CommerceContext);
-            var editedComponentType = applicableComponentTypes.SingleOrDefault(comp => entityView.Action == $"Edit-{comp.FullName}");
-
-            if (editedComponentType != null)
+            var components = commerceEntity.Components;
+            if(!string.IsNullOrWhiteSpace(entityView.ItemId) && commerceEntity is SellableItem)
             {
-                // Get the component from the sellable item or its variation
-                var editedComponent = catalogSchemaCommander.GetEditedComponent(commerceEntity, editedComponentType);
+                var variation = ((SellableItem)commerceEntity).GetVariation(entityView.ItemId);
+                if (variation != null)
+                {
+                    components = variation.ChildComponents;
+                }
+            }
 
-                catalogSchemaCommander.SetPropertyValuesOnEditedComponent(entityView.Properties, editedComponentType, editedComponent, context.CommerceContext);
+            var allComponentTypes = await catalogSchemaCommander.GetAllComponentTypes(context.CommerceContext);
+            var editedComponentType = allComponentTypes.SingleOrDefault(compType => entityView.Action == $"Edit-{compType.FullName}");
+            var editedComponent = components.SingleOrDefault(comp => entityView.Action == $"Edit-{comp.GetType().FullName}");
+
+            if(editedComponent == null)
+            {
+                editedComponent = (Sitecore.Commerce.Core.Component)Activator.CreateInstance(editedComponentType);
+                components.Add(editedComponent);
+            }
+      
+            if (editedComponent != null)
+            {
+                catalogSchemaCommander.SetPropertyValuesOnEditedComponent(entityView.Properties, editedComponent.GetType(), editedComponent, context.CommerceContext);
 
                 // Persist changes
                 await this.catalogSchemaCommander.Pipeline<IPersistEntityPipeline>().Run(new PersistEntityArgument(commerceEntity), context);

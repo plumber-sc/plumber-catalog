@@ -77,6 +77,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                             Name = componentType.FullName,
                             DisplayName = entityViewAttribute?.ViewName ?? componentType.Name,
                             EntityId = arg.EntityId,
+                            ItemId = arg.ItemId,
                             EntityVersion = arg.EntityVersion
                         };
 
