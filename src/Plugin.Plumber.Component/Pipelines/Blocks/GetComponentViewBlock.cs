@@ -29,45 +29,56 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
             this.commander = catalogSchemaCommander;
         }
 
-        public async override Task<EntityView> Run(EntityView arg, CommercePipelineExecutionContext context)
+        public async override Task<EntityView> Run(EntityView entityView, CommercePipelineExecutionContext context)
         {
-            Condition.Requires(arg).IsNotNull($"{Name}: The argument cannot be null.");
+            Condition.Requires(entityView).IsNotNull($"{Name}: The argument cannot be null.");
             var request = this.viewCommander.CurrentEntityViewArgument(context.CommerceContext);
 
             if(request.Entity == null)
             {
-                return arg;
+                return entityView;
             }
 
-            var entityViewConditionsArgument = new EntityViewConditionsArgument(request.Entity, request.ViewName, arg.Action);
+            var entityViewConditionsArgument = new EntityViewConditionsArgument(request.Entity, request.ViewName, entityView.Action);
             var result = await commander.Pipeline<IGetApplicableViewConditionsPipeline>().Run(entityViewConditionsArgument, context);
 
             // Only proceed if the current entity is supported
             if (!result.IsSupportedEntity)
             {
-                return arg;
+                return entityView;
             }
 
             // Check if this is an edit view or display view
             if(!result.IsEditView && !result.IsDisplayView)
             {
-                return arg;
+                return entityView;
             }
 
             List<Type> applicableComponentTypes = await this.commander.GetApplicableComponentTypes(request.Entity, request.ItemId, context.CommerceContext);
 
-            var targetView = arg;
+            var targetView = entityView;
+
+            var commerceEntity = request.Entity;
+            var components = request.Entity.Components;
+            if (!string.IsNullOrWhiteSpace(entityView.ItemId) && commerceEntity is SellableItem)
+            {
+                var variation = ((SellableItem)commerceEntity).GetVariation(entityView.ItemId);
+                if (variation != null)
+                {
+                    components = variation.ChildComponents;
+                }
+            }
 
             foreach (var componentType in applicableComponentTypes)
             {
                 System.Attribute[] attrs = System.Attribute.GetCustomAttributes(componentType);
 
-                var component = request.Entity.Components.SingleOrDefault(comp => comp.GetType() == componentType);
+                var component = components.SingleOrDefault(comp => comp.GetType() == componentType);
 
                 if (attrs.SingleOrDefault(attr => attr is EntityViewAttribute) is EntityViewAttribute entityViewAttribute)
                 {
                     // Check if the edit action was requested for this specific component type
-                    var isEditViewForThisComponent = !string.IsNullOrEmpty(arg.Action) && arg.Action.Equals($"Edit-{componentType.FullName}", StringComparison.OrdinalIgnoreCase);
+                    var isEditViewForThisComponent = !string.IsNullOrEmpty(entityView.Action) && entityView.Action.Equals($"Edit-{componentType.FullName}", StringComparison.OrdinalIgnoreCase);
 
                     if (result.IsDisplayView)
                     {
@@ -76,12 +87,12 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                         {
                             Name = componentType.FullName,
                             DisplayName = entityViewAttribute?.ViewName ?? componentType.Name,
-                            EntityId = arg.EntityId,
-                            ItemId = arg.ItemId,
-                            EntityVersion = arg.EntityVersion
+                            EntityId = entityView.EntityId,
+                            ItemId = entityView.ItemId,
+                            EntityVersion = entityView.EntityVersion
                         };
 
-                        arg.ChildViews.Add(view);
+                        entityView.ChildViews.Add(view);
 
                         targetView = view;
                     }
@@ -119,7 +130,7 @@ namespace Plugin.Plumber.Component.Pipelines.Blocks
                 }
             }
 
-            return arg;
+            return entityView;
         }
     }
 }
