@@ -49,7 +49,7 @@
             "Properties": [
               "Color",
               "Size",
-              "Style",              
+              "Style",
               "DisambiguatingDescription"
             ],
             "ActionView": "DisplayProperties",
@@ -75,6 +75,26 @@
               "DisambiguatingDescription"
             ],
             "ActionView": "DisplayProperties",
+            "IsItemComponent": true
+          },
+          {
+            "$type": "Sitecore.Commerce.Core.LocalizeEntityComponentPolicy, Sitecore.Commerce.Core",
+            "Path": "NotesComponent",
+            "Properties": [
+              "ExternalNotes",
+              "InternalNotes"
+            ],
+            "ActionView": "Plugin.Plumber.Component.Sample.Components.NotesComponent",
+            "IsItemComponent": false
+          },
+          {
+            "$type": "Sitecore.Commerce.Core.LocalizeEntityComponentPolicy, Sitecore.Commerce.Core",
+            "Path": "ItemVariationsComponent.ItemVariationComponent.NotesComponent",
+            "Properties": [
+              "ExternalNotes",
+              "InternalNotes"
+            ],
+            "ActionView": "Plugin.Plumber.Component.Sample.Components.NotesComponent",
             "IsItemComponent": true
           }
         ]
