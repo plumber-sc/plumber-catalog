@@ -80,15 +80,26 @@ namespace Plugin.Plumber.Catalog.Commanders
         ///     
         /// </summary>
         /// <param name="sellableItem"></param>
+        /// <param name="itemId"></param>
         /// <param name="editedComponentType"></param>
         /// <returns></returns>
-        public Sitecore.Commerce.Core.Component GetEditedComponent(SellableItem sellableItem, Type editedComponentType)
+        public Sitecore.Commerce.Core.Component GetEditedComponent(SellableItem sellableItem, string itemId, Type editedComponentType)
         {
-            Sitecore.Commerce.Core.Component component = sellableItem.Components.SingleOrDefault(comp => comp.GetType() == editedComponentType);
+            var components = sellableItem.Components;
+            if(!string.IsNullOrEmpty(itemId))
+            {
+                var variation = sellableItem.GetVariation(itemId);
+                if (variation != null)
+                {
+                    components = variation.ChildComponents;
+                }
+            }
+
+            Sitecore.Commerce.Core.Component component = components.SingleOrDefault(comp => comp.GetType() == editedComponentType);
             if (component == null)
             {
                 component = (Sitecore.Commerce.Core.Component)Activator.CreateInstance(editedComponentType);
-                sellableItem.Components.Add(component);
+                components.Add(component);
             }
 
             return component;
