@@ -53,11 +53,18 @@ namespace Plugin.Plumber.Catalog.Pipelines.Blocks
 
             List<Type> applicableComponentTypes = await this.catalogSchemaCommander.GetApplicableComponentTypes(context.CommerceContext, sellableItem);
 
+            var components = sellableItem.Components;
+
             // See if we are dealing with the base sellable item or one of its variations.
             var variationId = string.Empty;
-            if (isVariationView && !string.IsNullOrEmpty(arg.ItemId))
+            if (!string.IsNullOrEmpty(arg.ItemId))
             {
                 variationId = arg.ItemId;
+                var variation = sellableItem.GetVariation(arg.ItemId);
+                if (variation != null)
+                {
+                    components = variation.ChildComponents;
+                }
             }
 
             var targetView = arg;
@@ -66,7 +73,7 @@ namespace Plugin.Plumber.Catalog.Pipelines.Blocks
             {
                 System.Attribute[] attrs = System.Attribute.GetCustomAttributes(componentType);
                 
-                var component = sellableItem.Components.SingleOrDefault(comp => comp.GetType() == componentType);
+                var component = components.SingleOrDefault(comp => comp?.GetType() == componentType);
 
                 if (attrs.SingleOrDefault(attr => attr is EntityViewAttribute) is EntityViewAttribute entityViewAttribute)
                 {

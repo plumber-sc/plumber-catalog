@@ -52,8 +52,9 @@ namespace Plugin.Plumber.Catalog.Pipelines.Blocks
             if (editedComponentType != null)
             {
                 // Get the component from the sellable item or its variation
-                var editedComponent = catalogSchemaCommander.GetEditedComponent(sellableItem, editedComponentType);
+                var editedComponent = catalogSchemaCommander.GetEditedComponent(sellableItem, entityView.ItemId, editedComponentType);
 
+                // Set the properties from the view on the component
                 catalogSchemaCommander.SetPropertyValuesOnEditedComponent(entityView.Properties, editedComponentType, editedComponent, context.CommerceContext);
 
                 // Persist changes
