@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sitecore.Commerce.Core" Version="2.2.*" />
-    <PackageReference Include="Sitecore.Commerce.Plugin.Catalog" Version="2.2.*" />
+    <PackageReference Include="Sitecore.Commerce.Core" Version="2.*" />
+    <PackageReference Include="Sitecore.Commerce.Plugin.Catalog" Version="2.*" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
