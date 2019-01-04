@@ -103,14 +103,23 @@ namespace Plugin.Plumber.Catalog.Sample.Pipelines.Blocks
     {
         public async override Task<SellableItemComponentsArgument> Run(SellableItemComponentsArgument arg, CommercePipelineExecutionContext context)
         {
-            arg.Register<WarrantyComponent>();
+            arg.RegisterComponent<WarrantyComponent>();
 
             return await Task.FromResult<SellableItemComponentsArgument>(arg);
         }
     }
 }
 ```
-This code registers three components with Plumber.Catalog. 
+This code registers the `WarrantyComponent` with Plumber.Catalog. 
+
+And don't forget to add `GetSellableItemComponentsBlock` to the `IGetSellableItemComponentsPipeline` by adding the following code to your `ConfigureSitecore` class:
+```c#
+ 	services.Sitecore().Pipelines(config => config
+                .ConfigurePipeline<IGetSellableItemComponentsPipeline>(configure =>
+                {
+                    configure.Add<GetSellableItemComponentsBlock>();
+                }));
+```
 
 
 
